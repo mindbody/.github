@@ -4,7 +4,8 @@ You are performing a .NET major version upgrade (e.g., net8.0 → net10.0). Foll
 - Class libraries already multi-targeting: replace old netX.0 with new, keep netstandard2.x targets.
 - Class libraries single-targeting netstandard: no TargetFramework change needed.
 - Test/app projects: update singular <TargetFramework> directly to new version.
-- Check global.json in solution root FIRST. Update SDK version before any dotnet CLI calls or you'll get NETSDK1045 errors.
+- Check global.json in solution root FIRST. Update SDK version before any dotnet CLI calls
+  or you'll get NETSDK1045 errors. Preserve existing rollForward policy.
 
 ## Package Version Management
 Before updating any packages, check whether a Directory.Packages.props file exists in the solution root.
@@ -24,8 +25,10 @@ Before updating any packages, check whether a Directory.Packages.props file exis
 - Microsoft.Extensions.*: update ALL to the SAME version matching the new .NET version (e.g., 10.0.x).
 - System.Text.Json: update to match .NET version.
 - Run `dotnet list package --outdated` and `--deprecated` to identify packages needing updates.
-- Third-party: update to latest stable. If NU1605 downgrade errors appear, update the package in ALL projects in the solution.
-- ⚠️ FluentAssertions: NEVER upgrade past 7.2.2 (license changed to proprietary at 8.0). Add comment in .csproj or Directory.Packages.props.
+- Third-party: update to latest stable. If NU1605 downgrade errors appear, update the package
+  in ALL projects in the solution.
+- ⚠️ FluentAssertions: NEVER upgrade past 7.2.2 (license changed to proprietary at 8.0).
+  Add comment in .csproj or Directory.Packages.props.
 - Microsoft.NET.Test.Sdk: MUST be 17.14.1+ (latest 17.x) in all test projects. Do NOT use 18.x.
 - Deprecated packages: update to latest stable if available; if not, add XML comment with migration plan.
 
@@ -34,11 +37,19 @@ Before updating any packages, check whether a Directory.Packages.props file exis
 - Sync any ARG version values (e.g., NewRelic agent) to match updated NuGet references.
 - Update pinned `dotnet tool install --version` values to latest available.
 
+## infrastructure.yaml
+If infrastructure.yaml exists and has a "lambdaFunctions" section, for each function in the section:
+- Update "runtime" value to "dotnet10".
+- Double the value for "memorySize", capping at 3008.
+- If "layers" contains a value matching "arn:aws:lambda:us-west-2:451483290750:layer:NewRelicDotnet:*",
+  update the trailing version number to "49".
+
 ## .NET 10 Breaking Changes
 - X509Certificate2 constructors are obsolete (SYSLIB0057). Replace with X509CertificateLoader:
   - new X509Certificate2(byte[]) → X509CertificateLoader.LoadCertificate(byte[])
   - new X509Certificate2(path, pwd) → X509CertificateLoader.LoadPkcs12FromFile(path, pwd)
-- WebHostBuilder deprecated (ASPDEPR004/ASPDEPR008): suppress with #pragma warnings on the affected lines; create follow-up work item for full WebApplication migration.
+- WebHostBuilder deprecated (ASPDEPR004/ASPDEPR008): suppress with #pragma warnings on the
+  affected lines; create follow-up work item for full WebApplication migration.
 
 ## Validation (in order)
 1. `dotnet restore` — no errors
@@ -49,18 +60,14 @@ Before updating any packages, check whether a Directory.Packages.props file exis
 6. Verify Microsoft.NET.Test.Sdk is 17.14.1+ in all test projects
 
 ## Documentation
-Update README.md: required SDK version, IDE version, target frameworks, key dependency versions, build/Docker instructions.
+Update README.md: required SDK version, IDE version, target frameworks, key dependency versions,
+build/Docker instructions.
 
 ## Commit
 - Do NOT stage .github/upgrades/ files.
 - Commit message must list: framework changes, package updates, deprecated packages resolved.
 
 ## Pull Request
-- Title should start with "Upgrade to .NET 10"
-- If repo generates a NuGet package, title must end with " +semver:breaking"
-- Use template in .github/pull_request_template.md if present
-
-## Constraints
-- FluentAssertions ≤ 7.2.2 (Apache 2.0 license). Non-negotiable.
-- Microsoft.NET.Test.Sdk: 17.14.1+ only (not 18.x).
-- Explicit package versions only — no wildcards (in .csproj or Directory.Packages.props).
+- Title must start with "Upgrade to .NET 10".
+- If any .csproj has <GeneratePackageOnBuild>true</GeneratePackageOnBuild> or explicit <IsPackable>true</IsPackable>, a Dockerfile contains 'dotnet pack', or any file in ci/ contains the text "ci/public/nugetJobs.yml", title must end with " +semver:breaking".
+- Use template in .github/pull_request_template.md if present.
