@@ -27,8 +27,7 @@ Before updating any packages, check whether a Directory.Packages.props file exis
 - Run `dotnet list package --outdated` and `--deprecated` to identify packages needing updates.
 - Third-party: update to latest stable. If NU1605 downgrade errors appear, update the package
   in ALL projects in the solution.
-- ⚠️ FluentAssertions: NEVER upgrade past 7.2.2 (license changed to proprietary at 8.0).
-  Add comment in .csproj or Directory.Packages.props.
+- ⚠️ FluentAssertions: NEVER upgrade to 8.0 or higher (license changed from Apache 2.0 to proprietary). If below 7.2.2, upgrade to 7.2.2. Add an XML comment in .csproj or Directory.Packages.props explaining the version cap.
 - Microsoft.NET.Test.Sdk: Update to latest stable. Do not downgrade.
 - Deprecated packages: update to latest stable if available; if not, add XML comment with migration plan.
 - Mindbody.*: update to latest stable if available.
