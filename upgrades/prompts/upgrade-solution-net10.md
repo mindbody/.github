@@ -1,16 +1,15 @@
 You are performing a .NET major version upgrade (e.g., net8.0 → net10.0). Follow these rules precisely.
 
 ## Project Files
-- Class libraries already multi-targeting: replace old netX.0 with new, keep netstandard2.x targets.
-- Class libraries single-targeting netstandard: no TargetFramework change needed.
+- Multi-targeting libraries: replace old netX.0 with new, keep netstandard2.x targets.
+- Single-target netstandard libraries: no TargetFramework change needed.
 - Test/app projects: update singular <TargetFramework> directly to new version.
-- Check global.json in solution root FIRST. Update SDK version before any dotnet CLI calls
-  or you'll get NETSDK1045 errors. Preserve existing rollForward policy.
+- Check global.json in solution root FIRST. Update SDK version before any dotnet CLI calls (prevents NETSDK1045). Preserve rollForward.
 
 ## Package Version Management
-Before updating any packages, check whether a Directory.Packages.props file exists in the solution root.
+Check for Directory.Packages.props in the solution root before updating any packages.
 
-**If Directory.Packages.props EXISTS (Central Package Management):**
+**If Directory.Packages.props EXISTS (CPM):**
 - Update ALL package versions in Directory.Packages.props only, as <PackageVersion> entries.
 - .csproj files must NOT have Version= attributes on <PackageReference> elements.
 - Use VersionOverride= in a .csproj only for deliberate per-project exceptions.
@@ -21,7 +20,7 @@ Before updating any packages, check whether a Directory.Packages.props file exis
 - Use explicit version numbers — no wildcards.
 - Do not use `dotnet add package` to update versions — edit .csproj files directly.
 
-## Packages (applies to both CPM and non-CPM)
+## Packages (both CPM and non-CPM)
 - Microsoft.Extensions.*: update ALL to the SAME version matching the new .NET version (e.g., 10.0.x).
 - System.Text.Json: update to match .NET version.
 - Run `dotnet list package --outdated` and `--deprecated` to identify packages needing updates.
@@ -33,12 +32,12 @@ Before updating any packages, check whether a Directory.Packages.props file exis
 - Mindbody.*: update to latest stable if available.
 
 ## Dockerfiles
-- Update all FROM mcr.microsoft.com/dotnet/sdk:{old} and dotnet/aspnet:{old} to new version.
+- Update FROM mcr.microsoft.com/dotnet/sdk:{old} and dotnet/aspnet:{old} to new version.
 - Sync any ARG version values (e.g., NewRelic agent) to match updated NuGet references.
 - Update pinned `dotnet tool install --version` values to latest available.
 
 ## infrastructure.yaml
-If infrastructure.yaml exists and has a "lambdaFunctions" section, for each function in the section:
+If infrastructure.yaml has a "lambdaFunctions" section, for each function:
 - Update "runtime" value to "dotnet10".
 - Increase the value for "memorySize" by half, capping at 3008.
 - If "layers" contains a value matching "arn:aws:lambda:us-west-2:451483290750:layer:NewRelicDotnet:*",
@@ -68,5 +67,5 @@ build/Docker instructions.
 
 ## Pull Request
 - Title must start with "Upgrade to .NET 10".
-- If any .csproj has <GeneratePackageOnBuild>true</GeneratePackageOnBuild> or explicit <IsPackable>true</IsPackable>, a Dockerfile contains 'dotnet pack', or any file in ci/ contains the text "ci/public/nugetJobs.yml", title must end with " +semver:breaking".
+- Append " +semver:breaking" to title if: any .csproj has GeneratePackageOnBuild=true or explicit IsPackable=true, a Dockerfile contains 'dotnet pack', or any ci/ file contains the text "ci/public/nugetJobs.yml".
 - Use template in .github/pull_request_template.md if present.
