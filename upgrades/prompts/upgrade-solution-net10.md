@@ -41,7 +41,7 @@ Before updating any packages, check whether a Directory.Packages.props file exis
 ## infrastructure.yaml
 If infrastructure.yaml exists and has a "lambdaFunctions" section, for each function in the section:
 - Update "runtime" value to "dotnet10".
-- Double the value for "memorySize", capping at 3008.
+- Increase the value for "memorySize" by half, capping at 3008.
 - If "layers" contains a value matching "arn:aws:lambda:us-west-2:451483290750:layer:NewRelicDotnet:*",
   update the trailing version number to "49".
 
