@@ -68,4 +68,4 @@ build/Docker instructions.
 ## Pull Request
 - Title must start with "Upgrade to .NET 10".
 - Append " +semver:breaking" to title if: any .csproj has GeneratePackageOnBuild=true or explicit IsPackable=true, a Dockerfile contains 'dotnet pack', or any ci/ file contains the text "ci/public/nugetJobs.yml".
-- Use template in .github/pull_request_template.md if present.
+- Use template in .github/pull_request_template.md if present, otherwise use https://raw.githubusercontent.com/mindbody/.github/main/.github/pull_request_template.md
