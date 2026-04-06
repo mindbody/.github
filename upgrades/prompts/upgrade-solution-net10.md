@@ -29,8 +29,9 @@ Before updating any packages, check whether a Directory.Packages.props file exis
   in ALL projects in the solution.
 - ⚠️ FluentAssertions: NEVER upgrade past 7.2.2 (license changed to proprietary at 8.0).
   Add comment in .csproj or Directory.Packages.props.
-- Microsoft.NET.Test.Sdk: MUST be 17.14.1+ (latest 17.x) in all test projects. Do NOT use 18.x.
+- Microsoft.NET.Test.Sdk: Update to latest stable. Do not downgrade.
 - Deprecated packages: update to latest stable if available; if not, add XML comment with migration plan.
+- Mindbody.*: update to latest stable if available.
 
 ## Dockerfiles
 - Update all FROM mcr.microsoft.com/dotnet/sdk:{old} and dotnet/aspnet:{old} to new version.
@@ -57,7 +58,6 @@ If infrastructure.yaml exists and has a "lambdaFunctions" section, for each func
 3. `dotnet test --configuration Release` — 100% pass rate
 4. `docker build` each Dockerfile — succeeds
 5. `dotnet list package --deprecated` — none remaining (or documented)
-6. Verify Microsoft.NET.Test.Sdk is 17.14.1+ in all test projects
 
 ## Documentation
 Update README.md: required SDK version, IDE version, target frameworks, key dependency versions,
