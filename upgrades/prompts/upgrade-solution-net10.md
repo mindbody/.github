@@ -31,6 +31,11 @@ Check for Directory.Packages.props in the solution root before updating any pack
 - Deprecated packages: update to latest stable if available; if not, add XML comment with migration plan.
 - Mindbody.*: update to latest stable if available.
 
+## aws-lambda-tools-default.json
+For each aws-lambda-tools-default.json found in the solution:
+- Set "framework" to "net10.0".
+- Set "function-runtime" to "dotnet10".
+
 ## Dockerfiles
 - Update FROM mcr.microsoft.com/dotnet/sdk:{old} and dotnet/aspnet:{old} to new version.
 - Sync any ARG version values (e.g., NewRelic agent) to match updated NuGet references.
