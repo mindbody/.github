@@ -36,6 +36,11 @@ For each aws-lambda-tools-default.json found in the solution:
 - Set "framework" to "net10.0".
 - Set "function-runtime" to "dotnet10".
 
+## launchSettings.json
+For each launchSettings.json found in the solution:
+- Update "executablePath" to use dotnet-lambda-test-tool-10.0.exe
+- Update "workingDirectory" to use net10.0
+
 ## Dockerfiles
 - Update FROM mcr.microsoft.com/dotnet/sdk:{old} and dotnet/aspnet:{old} to new version.
 - Sync any ARG version values (e.g., NewRelic agent) to match updated NuGet references.
