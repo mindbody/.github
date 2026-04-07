@@ -38,8 +38,8 @@ For each aws-lambda-tools-default.json found in the solution:
 
 ## launchSettings.json
 For each launchSettings.json found in the solution:
-- Update "executablePath" to use dotnet-lambda-test-tool-10.0.exe
-- Update "workingDirectory" to use net10.0
+- In "executablePath": replace dotnet-lambda-test-tool-{old}.exe with dotnet-lambda-test-tool-10.0.exe. Preserve the rest of the path.
+- In "workingDirectory": replace net{old} with net10.0. Preserve $(Configuration) exactly.
 
 ## Dockerfiles
 - Update FROM mcr.microsoft.com/dotnet/sdk:{old} and dotnet/aspnet:{old} to new version.
