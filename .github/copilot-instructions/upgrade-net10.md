@@ -1,6 +1,6 @@
 Perform a .NET major version upgrade (e.g., net8.0 to net10.0). Follow these rules precisely.
 
-If you encounter deprecated package verification issues, NuGet 401 errors, Microsoft.IdentityModel misalignment, .NET 10 breaking changes, or tool-generated files in commits, fetch <https://raw.githubusercontent.com/mindbody/.github/main/.github/upgrade-net10-supplement.md> and apply it before continuing.
+If you encounter deprecated package verification issues, NuGet 401 errors, Microsoft.IdentityModel misalignment, .NET 10 breaking changes, or tool-generated files in commits, fetch <https://raw.githubusercontent.com/mindbody/.github/refs/heads/main/.github/copilot-instructions/upgrade-net10.md> and apply it before continuing.
 
 ## Scope Discipline
 
