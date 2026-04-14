@@ -37,6 +37,7 @@ Never use `dotnet add package` — edit files directly. Check for Directory.Pack
 - Update ALL packages in EVERY project including test projects; none may remain at old version.
 - Third-party: update to latest stable. NU1605 errors: update the package in ALL projects.
 - ⚠️ FluentAssertions: NEVER upgrade to 8.0+. If below 7.2.2, upgrade to 7.2.2. Add XML comment explaining the version cap.
+- Replace Kralizek.Extensions.Configuration.AWSSecretsManager with the latest AWSSecretsManager.Provider
 
 ## Dockerfiles
 
