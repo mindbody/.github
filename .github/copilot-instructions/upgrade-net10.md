@@ -1,6 +1,6 @@
 Perform a .NET major version upgrade (e.g., net8.0 to net10.0). Follow these rules precisely.
 
-If you encounter deprecated package verification issues, NuGet 401 errors, Microsoft.IdentityModel misalignment, .NET 10 breaking changes, or tool-generated files in commits, fetch <https://raw.githubusercontent.com/mindbody/.github/refs/heads/main/.github/copilot-instructions/upgrade-net10.md> and apply it before continuing.
+If you encounter deprecated package verification issues, NuGet 401 errors, Microsoft.IdentityModel misalignment, .NET 10 breaking changes, or tool-generated files in commits, fetch <https://raw.githubusercontent.com/mindbody/.github/main/.github/copilot-instructions/upgrade-net10-supplement.md> and apply it before continuing.
 
 ## Scope Discipline
 
@@ -11,7 +11,7 @@ Stage only pre-existing files; the only exception is global.json if absent. Neve
 - Multi-targeting libraries: replace old netX.0 with new; keep netstandard2.x targets.
 - Single-target netstandard libraries: no TargetFramework change needed.
 - Test/app projects: update <TargetFramework> to new version.
-- global.json: update SDK version and preserve rollForward before any dotnet CLI calls (prevents NETSDK1045); create if absent with rollForward: latestFeature.
+- global.json: update SDK version and preserve rollForward before any dotnet CLI calls (prevents NETSDK1045); create if absent with rollForward: latestMinor.
 
 ## Package Version Management
 
