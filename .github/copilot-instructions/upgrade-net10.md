@@ -11,7 +11,7 @@ Stage only pre-existing files; the only exception is global.json if absent. Neve
 - Multi-targeting libraries: replace old netX.0 with new; keep netstandard2.x targets.
 - Single-target netstandard libraries: no TargetFramework change needed.
 - Test/app projects: update <TargetFramework> to new version.
-- global.json: update SDK version and preserve rollForward before any dotnet CLI calls (prevents NETSDK1045); create if absent with rollForward: latestFeature.
+- global.json: update SDK version and preserve rollForward before any dotnet CLI calls (prevents NETSDK1045); create if absent with rollForward: latestMinor.
 
 ## Package Version Management
 
@@ -85,4 +85,3 @@ Commit message: framework changes, package updates, deprecated packages resolved
 - Append " +semver:breaking" if: any .csproj has GeneratePackageOnBuild=true or explicit IsPackable=true, a Dockerfile contains 'dotnet pack', or any ci/ file contains 'ci/public/nugetJobs.yml'.
 - Use .github/pull_request_template.md if present, otherwise <https://raw.githubusercontent.com/mindbody/.github/main/.github/pull_request_template.md>
 - Include checklist: locally verified (restore/build/test) vs needs CI/live (Docker, Lambda dev deploy).
-Perform a .NET major version upgrade (e.g., net8.0 to net10.0). Follow these rules precisely.
