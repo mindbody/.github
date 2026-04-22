@@ -23,8 +23,7 @@ confirm the correct pairing.
 Before adding a deprecation comment, confirm status on nuget.org. Some packages flagged as
 deprecated by assessment tools are simply old versions of actively maintained packages
 (e.g., Microsoft.Identity.Client 4.33.0 is not deprecated — update to latest). If
-`dotnet list package --deprecated` returns 401 Unauthorized (private NuGet feeds), verify
-each flagged package manually on nuget.org.
+`dotnet list package --deprecated` returns 401 Unauthorized (private NuGet feeds), verify credentials in nuget.config.
 
 ## Microsoft.IdentityModel Transitive Version Alignment
 

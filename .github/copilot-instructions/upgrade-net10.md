@@ -1,10 +1,23 @@
 Perform a .NET major version upgrade (e.g., net8.0 to net10.0). Follow these rules precisely.
 
-If you encounter deprecated package verification issues, NuGet 401 errors, Microsoft.IdentityModel misalignment, .NET 10 breaking changes, or tool-generated files in commits, fetch <https://raw.githubusercontent.com/mindbody/.github/main/.github/copilot-instructions/upgrade-net10-supplement.md> and apply it before continuing.
+## Prerequisites
+
+Before making any changes, scan all .csproj and Directory.Packages.props files for internal
+packages (IAM.*, Identity.*, Mindbody.*). For each, attempt to resolve the latest available
+version using `dotnet list package --outdated`. If any internal package has no net10.0-compatible
+version available in the feed, STOP immediately — do not make any changes. List the blocking
+packages and their current versions, and advise that net10.0-compatible versions must be
+published before this upgrade can proceed.
+
+If you encounter deprecated package verification issues, NuGet 401 errors, Microsoft.IdentityModel
+misalignment, .NET 10 breaking changes, or tool-generated files in commits, fetch and apply
+<https://raw.githubusercontent.com/mindbody/.github/main/.github/copilot-instructions/upgrade-net10-supplement.md>
+before continuing.
 
 ## Scope Discipline
 
-Stage only pre-existing files; the only exception is global.json if absent. Never stage or commit plans, assessments, logs, or scaffolding.
+Stage only pre-existing files; the only exception is global.json if absent. Never stage or
+commit plans, assessments, logs, or scaffolding.
 
 ## Project Files
 
@@ -32,12 +45,13 @@ Never use `dotnet add package` — edit files directly. Check for Directory.Pack
 - Microsoft.Extensions.*: update ALL to the SAME .NET version (e.g., 10.0.x).
 - System.Text.Json: match new .NET version.
 - Microsoft.NET.Test.Sdk: update to latest stable; do not downgrade.
-- Mindbody.*: update to latest stable.
+- IAM.*, Identity.*, Mindbody.*: update to latest stable.
 - Run `dotnet list package --outdated` and `--deprecated`. Update every deprecated package to latest stable; if no replacement, add inline comment with migration path.
 - Update ALL packages in EVERY project including test projects; none may remain at old version.
+- Verify companion packages are mutually compatible (e.g., xunit and xunit.runner.visualstudio).
 - Third-party: update to latest stable. NU1605 errors: update the package in ALL projects.
 - ⚠️ FluentAssertions: NEVER upgrade to 8.0+. If below 7.2.2, upgrade to 7.2.2. Add XML comment explaining the version cap.
-- Replace Kralizek.Extensions.Configuration.AWSSecretsManager with the latest AWSSecretsManager.Provider
+- Replace Kralizek.Extensions.Configuration.AWSSecretsManager with the latest AWSSecretsManager.Provider.
 
 ## Dockerfiles
 
