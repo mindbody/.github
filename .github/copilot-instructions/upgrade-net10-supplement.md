@@ -25,6 +25,31 @@ deprecated by assessment tools are simply old versions of actively maintained pa
 (e.g., Microsoft.Identity.Client 4.33.0 is not deprecated — update to latest). If
 `dotnet list package --deprecated` returns 401 Unauthorized (private NuGet feeds), verify credentials in nuget.config.
 
+## NuGet Audit Source Configuration
+
+If `dotnet restore` or `dotnet list package --deprecated` fails with a 401 or
+authentication error that persists despite valid credentials, the cause may be NuGet
+attempting to query the internal Azure DevOps feed for vulnerability audit data — a
+capability it does not support. To resolve, create a nuget.config in the solution root
+(or update it if one exists) to restrict audit scanning to nuget.org only:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <config>
+    <add key="audit" value="true" />
+  </config>
+  <auditSources>
+    <clear />
+    <add key="nuget.org" value="https://api.nuget.org/v3/index.json" />
+  </auditSources>
+</configuration>
+```
+
+This preserves vulnerability scanning for public packages via nuget.org while
+suppressing the unsupported audit query against the internal feed. Commit this
+file as part of the upgrade — it is a permanent configuration fix, not scaffolding.
+
 ## Microsoft.IdentityModel Transitive Version Alignment
 
 After updating System.IdentityModel.Tokens.Jwt, run:
