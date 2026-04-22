@@ -40,7 +40,7 @@ explicit PackageReference pins to the affected project. See:
   - new X509Certificate2(path, pwd) → X509CertificateLoader.LoadPkcs12FromFile(path, pwd)
 - AuthenticationHandler subclasses: remove deprecated ISystemClock parameter; use the
   3-argument constructor.
-- TimeSpan.FromSeconds(int): cast to long to resolve overload ambiguity (e.g., TimeSpan.FromSeconds(30l)).
+- TimeSpan.FromSeconds(int): cast to float to resolve overload ambiguity and preserve underlying behavior (e.g., TimeSpan.FromSeconds(30.0)).
 - Microsoft.IdentityModel v8+: stricter iat/exp JWT validation. If test code constructs
   JWTs manually (e.g., SecurityTokenDescriptor), ensure IssuedAt and Expires are explicitly
   set. See <https://docs.duendesoftware.com/identityserver/troubleshooting/#microsoftidentitymodel-versions>

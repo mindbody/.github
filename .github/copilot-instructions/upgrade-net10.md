@@ -9,15 +9,11 @@ version available in the feed, STOP immediately — do not make any changes. Lis
 packages and their current versions, and advise that net10.0-compatible versions must be
 published before this upgrade can proceed.
 
-If you encounter deprecated package verification issues, NuGet 401 errors, Microsoft.IdentityModel
-misalignment, .NET 10 breaking changes, or tool-generated files in commits, fetch and apply
-<https://raw.githubusercontent.com/mindbody/.github/main/.github/copilot-instructions/upgrade-net10-supplement.md>
-before continuing.
+If you encounter deprecated package verification issues, NuGet 401 errors, Microsoft.IdentityModel misalignment, .NET 10 breaking changes, or tool-generated files in commits, fetch and apply <https://raw.githubusercontent.com/mindbody/.github/main/.github/copilot-instructions/upgrade-net10-supplement.md> before continuing.
 
 ## Scope Discipline
 
-Stage only pre-existing files; the only exception is global.json if absent. Never stage or
-commit plans, assessments, logs, or scaffolding.
+Stage only pre-existing files; the only exception is global.json if absent. Never stage or commit plans, assessments, logs, or scaffolding.
 
 ## Project Files
 
