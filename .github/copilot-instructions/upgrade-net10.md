@@ -54,6 +54,7 @@ Never use `dotnet add package` — edit files directly. Check for Directory.Pack
 - Update FROM dotnet/sdk:{old} and dotnet/aspnet:{old} to new version.
 - Sync ARG version values (e.g., NewRelic) to match updated NuGet references.
 - Update pinned `dotnet tool install --version` values to latest.
+- Change `addgroup` to `groupadd`, `adduser` to `useradd`, and `1000` to `1001`
 
 ## aws-lambda-tools-default.json
 
