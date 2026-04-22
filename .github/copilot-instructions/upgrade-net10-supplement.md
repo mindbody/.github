@@ -23,8 +23,32 @@ confirm the correct pairing.
 Before adding a deprecation comment, confirm status on nuget.org. Some packages flagged as
 deprecated by assessment tools are simply old versions of actively maintained packages
 (e.g., Microsoft.Identity.Client 4.33.0 is not deprecated — update to latest). If
-`dotnet list package --deprecated` returns 401 Unauthorized (private NuGet feeds), verify
-each flagged package manually on nuget.org.
+`dotnet list package --deprecated` returns 401 Unauthorized (private NuGet feeds), verify credentials in nuget.config.
+
+## NuGet Audit Source Configuration
+
+If `dotnet restore` or `dotnet list package --deprecated` fails with a 401 or
+authentication error that persists despite valid credentials, the cause may be NuGet
+attempting to query the internal Azure DevOps feed for vulnerability audit data — a
+capability it does not support. To resolve, create a nuget.config in the solution root
+(or update it if one exists) to restrict audit scanning to nuget.org only:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <config>
+    <add key="audit" value="true" />
+  </config>
+  <auditSources>
+    <clear />
+    <add key="nuget.org" value="https://api.nuget.org/v3/index.json" />
+  </auditSources>
+</configuration>
+```
+
+This preserves vulnerability scanning for public packages via nuget.org while
+suppressing the unsupported audit query against the internal feed. Commit this
+file as part of the upgrade — it is a permanent configuration fix, not scaffolding.
 
 ## Microsoft.IdentityModel Transitive Version Alignment
 
@@ -41,7 +65,7 @@ explicit PackageReference pins to the affected project. See:
   - new X509Certificate2(path, pwd) → X509CertificateLoader.LoadPkcs12FromFile(path, pwd)
 - AuthenticationHandler subclasses: remove deprecated ISystemClock parameter; use the
   3-argument constructor.
-- TimeSpan.FromSeconds(int): cast to long to resolve overload ambiguity (e.g., TimeSpan.FromSeconds(30l)).
+- TimeSpan.FromSeconds(int): cast to float to resolve overload ambiguity and preserve underlying behavior (e.g., TimeSpan.FromSeconds(30.0)).
 - Microsoft.IdentityModel v8+: stricter iat/exp JWT validation. If test code constructs
   JWTs manually (e.g., SecurityTokenDescriptor), ensure IssuedAt and Expires are explicitly
   set. See <https://docs.duendesoftware.com/identityserver/troubleshooting/#microsoftidentitymodel-versions>
