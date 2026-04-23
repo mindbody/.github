@@ -1,13 +1,19 @@
 Perform a .NET major version upgrade (e.g., net8.0 to net10.0). Follow these rules precisely.
 
-## Prerequisites
+## Gate: Internal Package Compatibility (complete before any edits)
 
-Before making any changes, scan all .csproj and Directory.Packages.props files for internal
-packages (IAM.*, Identity.*, Mindbody.*). For each, attempt to resolve the latest available
-version using `dotnet list package --outdated`. If any internal package has no net10.0-compatible
-version available in the feed, STOP immediately — do not make any changes. List the blocking
-packages and their current versions, and advise that net10.0-compatible versions must be
-published before this upgrade can proceed.
+1. Scan all .csproj and Directory.Packages.props files. Collect every internal package reference matching Mindbody.*, IAM.*, or Identity.*.
+2. Run `dotnet restore` to populate the local NuGet cache.
+3. For each internal package found in step 1, inspect its compiled targets:
+   Note: package IDs are lowercased on disk regardless of casing in .csproj files.
+   Run: `ls ~/.nuget/packages/<package-id-lowercase>/<version>/lib/`
+   A package is net10.0-compatible if its lib/ folder contains net10.0, netstandard2.0, or netstandard2.1. A package is a BLOCKER if lib/ contains only net9.0 or older with no netstandard2.x folder.
+4. If ANY internal package is a blocker:
+   - **STOP. Make no changes to any file.**
+   - List every blocking package with its current version and the lib/ TFMs found.
+   - Advise that net10.0-compatible versions must be published to the feed before this upgrade can proceed.
+   - Do not continue until explicitly told to proceed.
+5. Only after ALL internal packages pass this check, proceed to Scope Discipline.
 
 If you encounter deprecated package verification issues, NuGet 401 errors, Microsoft.IdentityModel misalignment, .NET 10 breaking changes, or tool-generated files in commits, fetch and apply <https://raw.githubusercontent.com/mindbody/.github/main/.github/copilot-instructions/upgrade-net10-supplement.md> before continuing.
 
