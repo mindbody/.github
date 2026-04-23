@@ -5,7 +5,8 @@ Perform a .NET major version upgrade (e.g., net8.0 to net10.0). Follow these rul
 1. Scan all .csproj and Directory.Packages.props files. Collect every internal package reference matching Mindbody.*, IAM.*, or Identity.*.
 2. Run `dotnet restore` to populate the local NuGet cache.
 3. For each internal package found in step 1, inspect its compiled targets:
-   `ls ~/.nuget/packages/<package-id>/<version>/lib/`
+   Note: package IDs are lowercased on disk regardless of casing in .csproj files.
+   Run: `ls ~/.nuget/packages/<package-id-lowercase>/<version>/lib/`
    A package is net10.0-compatible if its lib/ folder contains net10.0, netstandard2.0, or netstandard2.1. A package is a BLOCKER if lib/ contains only net9.0 or older with no netstandard2.x folder.
 4. If ANY internal package is a blocker:
    - **STOP. Make no changes to any file.**
