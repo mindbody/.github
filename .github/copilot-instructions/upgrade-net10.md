@@ -2,7 +2,18 @@ Perform a .NET major version upgrade (e.g., net8.0 to net10.0). Follow these rul
 
 ## Gate: Internal Package Compatibility (complete before any edits)
 
-1. Scan all .csproj and Directory.Packages.props files. Collect every internal package reference matching Mindbody.*, IAM.*, or Identity.*.
+Before making any changes, ensure your working branch is up to date with the default branch (`main` or `master`):
+
+```
+git fetch origin
+git checkout main || git checkout master   # switch to whichever exists
+git pull
+git checkout -b <your-branch-name>
+```
+
+Resolve any conflicts before proceeding. If merging is not safe (e.g., uncommitted changes exist), stash or commit them first.
+
+1. Scan all .csproj and Directory.Packages.props files. Collect every internal package reference matching Mindbody.\*, IAM.\*, or Identity.\*.
 2. Run `dotnet restore` to populate the local NuGet cache.
 3. For each internal package found in step 1, inspect its compiled targets:
    Note: package IDs are lowercased on disk regardless of casing in .csproj files.
@@ -44,10 +55,10 @@ Never use `dotnet add package` — edit files directly. Check for Directory.Pack
 
 ## Packages
 
-- Microsoft.Extensions.*: update ALL to the SAME .NET version (e.g., 10.0.x).
+- Microsoft.Extensions.\*: update ALL to the SAME .NET version (e.g., 10.0.x).
 - System.Text.Json: match new .NET version.
 - Microsoft.NET.Test.Sdk: update to latest stable; do not downgrade.
-- IAM.*, Identity.*, Mindbody.*: update to latest stable.
+- IAM.\*, Identity.\*, Mindbody.\*: update to latest stable.
 - Run `dotnet list package --outdated` and `--deprecated`. Update every deprecated package to latest stable; if no replacement, add inline comment with migration path.
 - Update ALL packages in EVERY project including test projects; none may remain at old version.
 - Verify companion packages are mutually compatible (e.g., xunit and xunit.runner.visualstudio).
@@ -79,7 +90,7 @@ If infrastructure.yaml has a "lambdaFunctions" section, for each function:
 
 - Set "runtime" to "dotnet10".
 - Increase "memorySize" by 50%, capping at 3008.
-- If "layers" contains "arn:aws:lambda:us-west-2:451483290750:layer:NewRelicDotnet:*", update trailing version to "49".
+- If "layers" contains "arn:aws:lambda:us-west-2:451483290750:layer:NewRelicDotnet:\*", update trailing version to "49".
 
 ## Validation
 
