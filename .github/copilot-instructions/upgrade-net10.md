@@ -3,15 +3,16 @@ Perform a .NET major version upgrade (e.g., net8.0 to net10.0). Follow these rul
 ## Gate: Internal Package Compatibility (complete before any edits)
 
 1. Scan all .csproj and Directory.Packages.props files. Collect every internal package reference matching Mindbody.*, IAM.*, or Identity.*.
-2. For each internal package, verify a net10.0-compatible version exists in the feed by running `dotnet add package <PackageName> --version "*" --dry-run` or checking the
-   package's listed target frameworks on the feed. A version is net10.0-compatible only if it explicitly lists net10.0 or net9.0+ in its supported frameworks, or targets
-   netstandard2.0/netstandard2.1 (which are compatible with any .NET version).
-3. If ANY internal package has no net10.0-compatible version available:
+2. Run `dotnet restore` to populate the local NuGet cache.
+3. For each internal package found in step 1, inspect its compiled targets:
+   `ls ~/.nuget/packages/<package-id>/<version>/lib/`
+   A package is net10.0-compatible if its lib/ folder contains net10.0, netstandard2.0, or netstandard2.1. A package is a BLOCKER if lib/ contains only net9.0 or older with no netstandard2.x folder.
+4. If ANY internal package is a blocker:
    - **STOP. Make no changes to any file.**
-   - List every blocking package with its current version and the latest available version.
+   - List every blocking package with its current version and the lib/ TFMs found.
    - Advise that net10.0-compatible versions must be published to the feed before this upgrade can proceed.
    - Do not continue until explicitly told to proceed.
-4. Only after ALL internal packages pass this check, proceed to Scope Discipline.
+5. Only after ALL internal packages pass this check, proceed to Scope Discipline.
 
 If you encounter deprecated package verification issues, NuGet 401 errors, Microsoft.IdentityModel misalignment, .NET 10 breaking changes, or tool-generated files in commits, fetch and apply <https://raw.githubusercontent.com/mindbody/.github/main/.github/copilot-instructions/upgrade-net10-supplement.md> before continuing.
 
