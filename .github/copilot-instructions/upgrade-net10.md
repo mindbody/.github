@@ -1,5 +1,11 @@
 Perform a .NET major version upgrade (e.g., net8.0 to net10.0). Follow these rules precisely.
 
+## Preflight: Branch Sync
+
+Before making changes, check whether the current branch is based on the latest default branch.
+If not, stop and ask the user whether to sync/rebase first.
+Do not stash, merge, or create commits unless explicitly instructed.
+
 ## Gate: Internal Package Compatibility (complete before any edits)
 
 1. Scan all .csproj and Directory.Packages.props files. Collect every internal package reference matching Mindbody.*, IAM.*, or Identity.*.
