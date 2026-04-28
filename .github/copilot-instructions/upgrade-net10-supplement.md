@@ -27,15 +27,47 @@ deprecated by assessment tools are simply old versions of actively maintained pa
 
 ## NuGet Audit Source Configuration
 
-If `dotnet restore` or `dotnet list package --deprecated` fails with a 401 or
-authentication error that persists despite valid credentials, the cause may be NuGet
-attempting to query the internal Azure DevOps feed for vulnerability audit data — a
-capability it does not support. To resolve, create a nuget.config in the solution root
-(or update it if one exists) to restrict audit scanning to nuget.org only:
+If `dotnet restore`, `dotnet list package --deprecated`, or other NuGet operations fail with a 401 or authentication error that persists despite valid credentials, or if the solution does not already define package sources/package source mapping consistently, create or update the solution-root nuget.config to standardize package sources and audit behavior.
+
+Standardize on these conventions:
+
+- Internal feed name: Mindbody-Nuget
+- Internal feed URL: <https://pkgs.dev.azure.com/mindbody/_packaging/Mindbody-Nuget/nuget/v3/index.json>
+- Public feed: <https://api.nuget.org/v3/index.json>
+
+If legacy internal feed names or URLs are found (for example mindbody.pkgs.visualstudio.com or other older aliases), replace them with the standard Mindbody-Nuget / pkgs.dev.azure.com form.
+
+Important:
+
+- If no repo-specific NuGet source configuration exists, you may create a standardized nuget.config using the example below.
+- If a nuget.config already exists and contains other required repo-specific settings, merge carefully instead of replacing unrelated configuration.
+- Only use <clear /> in packageSources when intentionally standardizing sources for the repo and no additional required feeds need to be preserved.
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <configuration>
+  <packageSources>
+    <clear /> <!-- Intentionally standardizes sources for this repo  -->
+    <add key="Mindbody-Nuget" value="https://pkgs.dev.azure.com/mindbody/_packaging/Mindbody-Nuget/nuget/v3/index.json" protocolVersion="3" />
+    <add key="nuget.org" value="https://api.nuget.org/v3/index.json" protocolVersion="3" />
+  </packageSources>
+  <packageSourceMapping>
+    <!-- Prefer internal package prefixes on the internal feed -->
+    <packageSource key="Mindbody-Nuget">
+      <package pattern="DotNet.IdentityLegacyGateway.ApiClient" />
+      <package pattern="DotNet.IdentityUserGateway.ApiClient" />
+      <package pattern="IAM.*" />
+      <package pattern="Identity.*" />
+      <package pattern="MbCore.*" />
+      <package pattern="Mindbody.*" />
+      <package pattern="Permissions.*" />
+      <package pattern="Kralizek.*" />
+    </packageSource>
+    <!-- Allow all other packages from nuget.org -->
+    <packageSource key="nuget.org">
+      <package pattern="*" />
+    </packageSource>
+  </packageSourceMapping>
   <config>
     <add key="audit" value="true" />
   </config>
@@ -47,7 +79,7 @@ capability it does not support. To resolve, create a nuget.config in the solutio
 ```
 
 This preserves vulnerability scanning for public packages via nuget.org while
-suppressing the unsupported audit query against the internal feed. Commit this
+suppressing unsupported audit queries against the internal Azure DevOps feed. Commit this
 file as part of the upgrade — it is a permanent configuration fix, not scaffolding.
 
 ## Microsoft.IdentityModel Transitive Version Alignment
