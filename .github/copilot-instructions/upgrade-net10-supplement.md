@@ -14,9 +14,9 @@ production files staged.
 
 ## Package Companion Compatibility
 
-Verify companion packages are on a mutually compatible version matrix. Example: xunit and
-xunit.runner.visualstudio must be compatible versions — check the xunit release notes to
-confirm the correct pairing.
+Verify companion packages are on a mutually compatible version matrix. If staying on xunit v2,
+xunit and xunit.runner.visualstudio must be compatible versions — check the xunit release notes
+to confirm the correct pairing. For xunit v3 migration, see the dedicated section below.
 
 ## Deprecated Package Verification
 
@@ -27,7 +27,12 @@ deprecated by assessment tools are simply old versions of actively maintained pa
 
 ## NuGet Audit Source Configuration
 
-If `dotnet restore`, `dotnet list package --deprecated`, or other NuGet operations fail with a 401 or authentication error that persists despite valid credentials, or if the solution does not already define package sources/package source mapping consistently, create or update the solution-root nuget.config to standardize package sources and audit behavior.
+If `dotnet restore` produces NU1900 warnings ("Error occurred while getting package vulnerability
+data: Unable to load the service index for source"), a 401 or authentication error that persists
+despite valid credentials, or if the solution does not already define package sources/package
+source mapping consistently, create or update the solution-root nuget.config to standardize
+package sources and audit behavior. Azure DevOps feeds do not support the NuGet vulnerability
+audit API, so audit sources must be restricted to nuget.org.
 
 Standardize on these conventions:
 
@@ -86,9 +91,20 @@ file as part of the upgrade — it is a permanent configuration fix, not scaffol
 
 After updating System.IdentityModel.Tokens.Jwt, run:
 `dotnet list package --include-transitive | Select-String "Microsoft.IdentityModel|System.IdentityModel"`
-Verify all Microsoft.IdentityModel.* packages are at the same version. If misaligned, add
-explicit PackageReference pins to the affected project. See:
+Verify all Microsoft.IdentityModel.* packages are at the same version. If misaligned, add explicit PackageReference pins to the affected project. See:
 <https://docs.duendesoftware.com/identityserver/troubleshooting/#microsoftidentitymodel-versions>
+
+## xUnit v3 Migration
+
+If upgrading to xunit.v3 (v3.x), replace the three v2-era packages with a single package:
+
+- Remove `xunit`, `xunit.runner.visualstudio`, and `Microsoft.NET.Test.Sdk`.
+- Add `xunit.v3` (latest stable, currently 3.2.2). The runner and test SDK are built in.
+- Add `<OutputType>Exe</OutputType>` to each test project's `<PropertyGroup>`. xunit v3 test projects must be executable.
+- Check for transitive dependency breakage. Packages that were pulled in transitively by xunit v2 (e.g., Newtonsoft.Json) will no longer be available. If build errors reference missing types, replace usage with built-in alternatives (e.g., `System.Text.Json`) or add an explicit PackageReference.
+- After migration, run `dotnet test --configuration Release`. If zero tests are discovered,
+  `<OutputType>Exe</OutputType>` is missing from one or more test projects.
+- If any test project cannot migrate to v3 due to a dependency that requires xunit v2 abstractions, keep that project on the latest xunit v2 and add an inline comment in the project file explaining why.
 
 ## .NET 10 Breaking Changes
 

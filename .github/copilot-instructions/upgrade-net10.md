@@ -21,7 +21,7 @@ Do not stash, merge, or create commits unless explicitly instructed.
    - Do not continue until explicitly told to proceed.
 5. Only after ALL internal packages pass this check, proceed to Scope Discipline.
 
-If you encounter deprecated package verification issues, NuGet 401 errors, Microsoft.IdentityModel misalignment, .NET 10 breaking changes, or tool-generated files in commits, fetch and apply <https://raw.githubusercontent.com/mindbody/.github/main/.github/copilot-instructions/upgrade-net10-supplement.md> before continuing.
+If you encounter deprecated package verification issues, NuGet 401 errors, NU1900 audit warnings, xunit v3 migration, Microsoft.IdentityModel misalignment, .NET 10 breaking changes, or tool-generated files in commits, fetch and apply <https://raw.githubusercontent.com/mindbody/.github/main/.github/copilot-instructions/upgrade-net10-supplement.md> before continuing.
 
 ## Scope Discipline
 
