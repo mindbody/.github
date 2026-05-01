@@ -60,13 +60,17 @@ Never use `dotnet add package` — edit files directly. Check for Directory.Pack
 - Third-party: update to latest stable. NU1605 errors: update the package in ALL projects.
 - ⚠️ FluentAssertions: NEVER upgrade to 8.0+. If below 7.2.2, upgrade to 7.2.2. Add XML comment explaining the version cap.
 - Replace Kralizek.Extensions.Configuration.AWSSecretsManager with the latest AWSSecretsManager.Provider.
+- After all package updates, verify indentation in every modified .csproj and Directory.Packages.props file. Fix any inconsistent or broken indentation.
 
 ## Dockerfiles
+
+Apply these rules to all `Dockerfile` and `*.Dockerfile` files.
 
 - Update FROM dotnet/sdk:{old} and dotnet/aspnet:{old} to new version.
 - Sync ARG version values (e.g., NewRelic) to match updated NuGet references.
 - Update pinned `dotnet tool install --version` values to latest.
-- Change `addgroup` to `groupadd`, `adduser` to `useradd`, and `1000` to `1001`
+- Do not change the base image type.
+- If user/group creation uses ID `1000`, update it to `1001`.
 
 ## aws-lambda-tools-default.json
 
