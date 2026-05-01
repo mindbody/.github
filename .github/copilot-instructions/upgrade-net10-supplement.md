@@ -27,12 +27,7 @@ deprecated by assessment tools are simply old versions of actively maintained pa
 
 ## NuGet Audit Source Configuration
 
-If `dotnet restore` produces NU1900 warnings ("Error occurred while getting package vulnerability
-data: Unable to load the service index for source"), a 401 or authentication error that persists
-despite valid credentials, or if the solution does not already define package sources/package
-source mapping consistently, create or update the solution-root nuget.config to standardize
-package sources and audit behavior. Azure DevOps feeds do not support the NuGet vulnerability
-audit API, so audit sources must be restricted to nuget.org.
+If `dotnet restore` produces NU1900 warnings ("Error occurred while getting package vulnerability data: Unable to load the service index for source"), a 401 or authentication error that persists despite valid credentials, or if the solution does not already define package sources/package source mapping consistently, create or update the solution-root nuget.config to standardize package sources and audit behavior. Azure DevOps feeds do not support the NuGet vulnerability audit API, so audit sources must be restricted to nuget.org.
 
 Standardize on these conventions:
 
