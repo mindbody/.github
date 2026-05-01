@@ -67,10 +67,11 @@ Never use `dotnet add package` — edit files directly. Check for Directory.Pack
 Apply these rules to all `Dockerfile` and `*.Dockerfile` files.
 
 - Update FROM dotnet/sdk:{old} and dotnet/aspnet:{old} to new version.
+- Preserve image family and variant: sdk stays sdk, aspnet stays aspnet, alpine stays alpine, etc.
 - Sync ARG version values (e.g., NewRelic) to match updated NuGet references.
 - Update pinned `dotnet tool install --version` values to latest.
-- Do not change the base image type.
-- If user/group creation uses ID `1000`, update it to `1001`.
+- If user or group creation uses UID/GID 1000, update it to 1001.
+- For Alpine images, keep adduser/addgroup. For Debian/Ubuntu-style images, use useradd/groupadd and convert flags as needed.
 
 ## aws-lambda-tools-default.json
 
