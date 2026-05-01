@@ -21,7 +21,7 @@ Do not stash, merge, or create commits unless explicitly instructed.
    - Do not continue until explicitly told to proceed.
 5. Only after ALL internal packages pass this check, proceed to Scope Discipline.
 
-If you encounter deprecated package verification issues, NuGet 401 errors, Microsoft.IdentityModel misalignment, .NET 10 breaking changes, or tool-generated files in commits, fetch and apply <https://raw.githubusercontent.com/mindbody/.github/main/.github/copilot-instructions/upgrade-net10-supplement.md> before continuing.
+If you encounter deprecated package verification issues, NuGet 401 errors, NU1900 audit warnings, xunit v3 migration, Microsoft.IdentityModel misalignment, .NET 10 breaking changes, or tool-generated files in commits, fetch and apply <https://raw.githubusercontent.com/mindbody/.github/main/.github/copilot-instructions/upgrade-net10-supplement.md> before continuing.
 
 ## Scope Discipline
 
@@ -67,10 +67,11 @@ Never use `dotnet add package` — edit files directly. Check for Directory.Pack
 Apply these rules to all `Dockerfile` and `*.Dockerfile` files.
 
 - Update FROM dotnet/sdk:{old} and dotnet/aspnet:{old} to new version.
+- Preserve image family and variant: sdk stays sdk, aspnet stays aspnet, alpine stays alpine, etc.
 - Sync ARG version values (e.g., NewRelic) to match updated NuGet references.
 - Update pinned `dotnet tool install --version` values to latest.
-- Do not change the base image type.
-- If user/group creation uses ID `1000`, update it to `1001`.
+- If user or group creation uses UID/GID 1000, update it to 1001.
+- For Alpine images, keep adduser/addgroup. For Debian/Ubuntu-style images, use useradd/groupadd and convert flags as needed.
 
 ## aws-lambda-tools-default.json
 
