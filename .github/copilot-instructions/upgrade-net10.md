@@ -86,7 +86,8 @@ For each found:
 
 ## infrastructure.yaml
 
-If infrastructure.yaml has a "lambdaFunctions" section, for each function:
+If infrastructure.yaml has a "lambdaFunctions" section, apply these rules only to functions
+whose existing "runtime" starts with "dotnet" (for example dotnet6 or dotnet8):
 
 - Set "runtime" to "dotnet10".
 - Increase "memorySize" by 50%, capping at 3008.
