@@ -91,14 +91,15 @@ Verify all Microsoft.IdentityModel.* packages are at the same version. If misali
 
 ## xUnit v3 Migration
 
-If upgrading to xunit.v3 (v3.x), replace the three v2-era packages with a single package:
+If upgrading to xunit.v3 (v3.x), replace the v2 core package while preserving VSTest compatibility (required for `dotnet test` in VSTest mode, used by CI pipelines):
 
-- Remove `xunit`, `xunit.runner.visualstudio`, and `Microsoft.NET.Test.Sdk`.
-- Add `xunit.v3` (latest stable, currently 3.2.2). The runner and test SDK are built in.
+- Remove `xunit` (the v2 core package).
+- Add `xunit.v3` (latest stable, currently 3.2.2).
+- Keep `Microsoft.NET.Test.Sdk` — required as the VSTest test host for `dotnet test`.
+- Keep `xunit.runner.visualstudio` — update it to the latest stable 3.x version. This is the VSTest adapter that enables xUnit test discovery and execution.
 - Add `<OutputType>Exe</OutputType>` to each test project's `<PropertyGroup>`. xunit v3 test projects must be executable.
 - Check for transitive dependency breakage. Packages that were pulled in transitively by xunit v2 (e.g., Newtonsoft.Json) will no longer be available. If build errors reference missing types, replace usage with built-in alternatives (e.g., `System.Text.Json`) or add an explicit PackageReference.
-- After migration, run `dotnet test --configuration Release`. If zero tests are discovered,
-  `<OutputType>Exe</OutputType>` is missing from one or more test projects.
+- After migration, run `dotnet test --configuration Release` and verify tests are discovered and passing.
 - If any test project cannot migrate to v3 due to a dependency that requires xunit v2 abstractions, keep that project on the latest xunit v2 and add an inline comment in the project file explaining why.
 
 ## .NET 10 Breaking Changes
