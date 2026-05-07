@@ -61,6 +61,7 @@ Never use `dotnet add package` — edit files directly. Check for Directory.Pack
 - ⚠️ FluentAssertions: NEVER upgrade to 8.0+. If below 7.2.2, upgrade to 7.2.2. Add XML comment explaining the version cap.
 - Replace Kralizek.Extensions.Configuration.AWSSecretsManager with the latest AWSSecretsManager.Provider.
 - After all package updates, verify indentation in every modified .csproj and Directory.Packages.props file. Fix any inconsistent or broken indentation.
+- NLog.Web.AspNetCore: if upgrading to 6.x from any earlier major version, also add NLog.Targets.Trace (moved out of the core package in 6.x).
 
 ## Dockerfiles
 
